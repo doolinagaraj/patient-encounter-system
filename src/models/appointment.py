@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 from src.database import Base
 
+
 class Appointment(Base):
     __tablename__ = "appointments"
 
@@ -14,4 +15,3 @@ class Appointment(Base):
 
     patient = relationship("Patient")
     doctor = relationship("Doctor")
- 

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 from src.database import Base
 
+
 class Doctor(Base):
     __tablename__ = "doctors"
 

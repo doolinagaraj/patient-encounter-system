@@ -1,3 +1,29 @@
+[tool.poetry]
+name = "patient-encounter-system"
+version = "0.1.0"
+description = "A small patient encounter system"
+authors = ["Admin <admin@example.com>"]
+readme = "README.md"
+license = "MIT"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+sqlalchemy = "^2.0"
+alembic = "^1.13"
+pydantic = "^2.0"
+email-validator = "^2.3.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.0"
+pytest-cov = "^4.0"
+anyio = "^4.0"
+ruff = "^0.11.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.black]
 line-length = 88
 
