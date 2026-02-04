@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
 from fastapi import HTTPException
 from src.models.appointment import Appointment
 from src.models.doctor import Doctor
@@ -22,7 +21,7 @@ def create_appointment(db: Session, appointment):
 
     end_time = appointment.start_time + timedelta(minutes=appointment.duration_minutes)
 
-    # Check for overlapping appointments for the same doctor using Python-level calculations.
+    # Check overlapping appointments for the same doctor.
     candidates = (
         db.query(Appointment)
         .filter(

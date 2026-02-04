@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from src.models.patient import Patient
 
+
 def create_patient(db: Session, data):
     existing = db.query(Patient).filter(Patient.email == data.email).first()
     if existing:
@@ -12,6 +13,7 @@ def create_patient(db: Session, data):
     db.commit()
     db.refresh(patient)
     return patient
+
 
 def get_patient(db: Session, patient_id: int):
     patient = db.query(Patient).filter(Patient.id == patient_id).first()
