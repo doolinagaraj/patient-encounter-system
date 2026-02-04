@@ -19,35 +19,14 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: '1.5.1'
-          installer-options: '--yes'
-
-      - name: Install dependencies (attempt poetry, fallback to pip)
+      - name: Install dependencies (pip-only)
         run: |
           set -x
           python --version
-          pip --version
-          poetry --version || true
-          poetry config virtualenvs.create true || true
-          if poetry install -vvv --no-interaction --no-ansi 2>&1 | tee poetry-install.log; then
-            echo "Poetry install succeeded"
-            poetry env info --path || true
-          else
-            echo "Poetry install failed — showing last 200 lines of poetry log"
-            tail -n 200 poetry-install.log || true
-            echo "Attempting pip fallback: upgrading pip and installing requirements.txt"
-            python -m pip install --upgrade pip
-            python -m pip install -r requirements.txt 2>&1 | tee pip-install.log || ( echo 'pip install failed' ; tail -n 200 pip-install.log || true ; exit 1 )
-            python -m pip list
-          fi
-          echo "Post-install: which python, pip"
-          which python || true
-          python --version || true
-          pip --version || true
-          ls -la
+          python -m pip --version
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt 2>&1 | tee pip-install.log
+          python -m pip list
 
       - name: Run linters
         run: |
