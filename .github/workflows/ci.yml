@@ -28,15 +28,13 @@ jobs:
           python -m pip install -r requirements.txt 2>&1 | tee pip-install.log
           python -m pip list
 
-      - name: Run linters
+      - name: Run linters (verbose)
         run: |
-          if poetry env info >/dev/null 2>&1; then
-            poetry run ruff check .
-            poetry run black --check .
-          else
-            ruff check .
-            black --check .
-          fi
+          set -x
+          ruff --version || true
+          black --version || true
+          ruff check . 2>&1 | tee ruff.log || ( echo 'ruff failed — showing last 200 lines'; tail -n 200 ruff.log || true ; exit 1 )
+          black --check . 2>&1 | tee black.log || ( echo 'black failed — showing last 200 lines'; tail -n 200 black.log || true ; exit 1 )
 
       - name: Run bandit
         run: |
