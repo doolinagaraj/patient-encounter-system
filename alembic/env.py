@@ -1,9 +1,17 @@
 from logging.config import fileConfig
+import os
+import sys
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+# ensure project root is on sys.path for imports (so 'src' package can be imported)
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from sqlalchemy import pool, create_engine
 from alembic import context
+
+from src.database import Base, DATABASE_URL
+import src.models.patient  # noqa: F401
+import src.models.doctor  # noqa: F401
+import src.models.appointment  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -14,30 +22,20 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-import os
-import sys
-
 # ensure project root is on sys.path for imports (so 'src' package can be imported)
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.database import Base, DATABASE_URL
 
 # Import modules so model tables are registered on metadata for autogenerate
-import src.models.patient
-import src.models.doctor
-import src.models.appointment
+import src.models.patient  # noqa: F401
+import src.models.doctor  # noqa: F401
+import src.models.appointment  # noqa: F401
 
 # let env use the project's DATABASE_URL from src.database
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 target_metadata = Base.metadata
-
-# use create_engine directly for SQLite to pass connect_args
-from sqlalchemy import create_engine
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
