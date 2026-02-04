@@ -36,6 +36,16 @@ jobs:
           ruff check . 2>&1 | tee ruff.log || ( echo 'ruff failed — showing last 200 lines'; tail -n 200 ruff.log || true ; exit 1 )
           black --check . 2>&1 | tee black.log || ( echo 'black failed — showing last 200 lines'; tail -n 200 black.log || true ; exit 1 )
 
+      - name: Upload linter logs (diagnostic)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linter-logs
+          path: |
+            ruff.log
+            black.log
+            pip-install.log
+
       - name: Run bandit
         run: |
           if poetry env info >/dev/null 2>&1; then
