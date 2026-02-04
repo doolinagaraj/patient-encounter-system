@@ -5,13 +5,13 @@ import sys
 # ensure project root is on sys.path for imports (so 'src' package can be imported)
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from sqlalchemy import pool, create_engine
+from sqlalchemy import pool, create_engine  # noqa: E402
 from alembic import context
 
-from src.database import Base, DATABASE_URL
-import src.models.patient  # noqa: F401
-import src.models.doctor  # noqa: F401
-import src.models.appointment  # noqa: F401
+from src.database import Base, DATABASE_URL  # noqa: E402
+import src.models.patient  # noqa: F401,E402
+import src.models.doctor  # noqa: F401,E402
+import src.models.appointment  # noqa: F401,E402
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
