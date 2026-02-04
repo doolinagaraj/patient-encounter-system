@@ -42,15 +42,29 @@ jobs:
 
       - name: Run linters
         run: |
-          poetry run ruff check .
-          poetry run black --check .
+          if poetry env info >/dev/null 2>&1; then
+            poetry run ruff check .
+            poetry run black --check .
+          else
+            ruff check .
+            black --check .
+          fi
 
       - name: Run bandit
         run: |
-          poetry run bandit -r src -lll
+          if poetry env info >/dev/null 2>&1; then
+            poetry run bandit -r src -lll
+          else
+            bandit -r src -lll
+          fi
 
       - name: Run tests
-        run: poetry run pytest -q
+        run: |
+          if poetry env info >/dev/null 2>&1; then
+            poetry run pytest -q
+          else
+            python -m pytest -q
+          fi
 
   build-and-push:
     name: Build and push Docker image to GitHub Container Registry
