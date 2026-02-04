@@ -32,11 +32,16 @@ def create_appointment(db: Session, appointment):
         .all()
     )
 
+    def _ensure_tz(dt):
+        if dt.tzinfo is None:
+            return dt.replace(tzinfo=timezone.utc)
+        return dt
+
     for scheduled in candidates:
-        scheduled_end = scheduled.start_time + timedelta(
-            minutes=scheduled.duration_minutes
-        )
-        if scheduled_end > appointment.start_time:
+        scheduled_start = _ensure_tz(scheduled.start_time)
+        scheduled_end = scheduled_start + timedelta(minutes=scheduled.duration_minutes)
+        new_start = _ensure_tz(appointment.start_time)
+        if scheduled_end > new_start:
             raise HTTPException(status_code=409, detail="Overlapping appointment")
 
     db.add(appointment)
