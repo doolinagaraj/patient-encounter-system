@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from src.models.appointment import Appointment
 from src.models.doctor import Doctor
 
+
 def create_appointment(db: Session, appointment):
     if appointment.start_time.tzinfo is None:
         raise HTTPException(status_code=400, detail="Datetime must be timezone-aware")
@@ -21,17 +22,22 @@ def create_appointment(db: Session, appointment):
 
     end_time = appointment.start_time + timedelta(minutes=appointment.duration_minutes)
 
-    conflict = db.query(Appointment).filter(
-        Appointment.doctor_id == appointment.doctor_id,
-        and_(
+    # Check for overlapping appointments for the same doctor using Python-level calculations.
+    candidates = (
+        db.query(Appointment)
+        .filter(
+            Appointment.doctor_id == appointment.doctor_id,
             Appointment.start_time < end_time,
-            (Appointment.start_time +
-             timedelta(minutes=Appointment.duration_minutes)) > appointment.start_time
         )
-    ).first()
+        .all()
+    )
 
-    if conflict:
-        raise HTTPException(status_code=409, detail="Overlapping appointment")
+    for scheduled in candidates:
+        scheduled_end = scheduled.start_time + timedelta(
+            minutes=scheduled.duration_minutes
+        )
+        if scheduled_end > appointment.start_time:
+            raise HTTPException(status_code=409, detail="Overlapping appointment")
 
     db.add(appointment)
     db.commit()

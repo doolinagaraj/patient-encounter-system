@@ -30,6 +30,10 @@ jobs:
           poetry run ruff check .
           poetry run black --check .
 
+      - name: Run bandit
+        run: |
+          poetry run bandit -r src -lll
+
       - name: Run tests
         run: poetry run pytest -q
 
