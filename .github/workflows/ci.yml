@@ -25,14 +25,20 @@ jobs:
           version: '1.5.1'
           installer-options: '--yes'
 
-      - name: Install dependencies (verbose)
+      - name: Install dependencies (attempt poetry, fallback to pip)
         run: |
           python --version
           pip --version
           poetry --version
           poetry config virtualenvs.create true
-          poetry install -vvv --no-interaction --no-ansi
-          poetry env info --path
+          if poetry install -vvv --no-interaction --no-ansi; then
+            echo "Poetry install succeeded"
+            poetry env info --path || true
+          else
+            echo "Poetry install failed — falling back to pip install"
+            python -m pip install --upgrade pip
+            python -m pip install -r requirements.txt
+          fi
 
       - name: Run linters
         run: |
